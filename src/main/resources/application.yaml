@@ -1,4 +1,13 @@
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 1929
+    url: jdbc:postgresql://localhost:5432/db_ecommerce_a01m1
+
   application:
     name: spwmvc-a01-a1
 server:

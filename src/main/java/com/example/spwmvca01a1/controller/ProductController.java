@@ -1,47 +1,81 @@
 package com.example.spwmvca01a1.controller;
 
 import com.example.spwmvca01a1.dto.CreateProductRequest;
+import com.example.spwmvca01a1.dto.ProductDto;
 import com.example.spwmvca01a1.dto.ProductResponse;
 import com.example.spwmvca01a1.dto.UpdateProductRequest;
+import com.example.spwmvca01a1.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@Slf4j
 @RestController
 @RequestMapping("/api/v1/products")
+@Slf4j
 public class ProductController {
-    @GetMapping
-    public List<ProductResponse> getAllProducts(
-            @RequestParam(required = false,defaultValue = "0") int pageNumber,
-            @RequestParam(required = false,defaultValue = "20") int pageSize
-    ){
-        log.info("pageNumber : {}, pageSize : {}",pageNumber,pageSize);
-        return  List.of();
-    }
 
-    @PostMapping
-    public void createNewProduct(@RequestBody CreateProductRequest createProductRequest){
-        log.info("createProductRequest : {}",createProductRequest);
-    }
+    private final ProductService productService;
 
-    @PutMapping("/{code}")
-    public ProductResponse updateProductByCode(@PathVariable String code , @RequestBody UpdateProductRequest updateProductRequest){
-        log.info("updateProductByCode  : {} with new data : {}",code,updateProductRequest);
-        return  null;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @PatchMapping("/{code}")
-    public ProductResponse updateProductPartiallyByCode(@PathVariable String code, @RequestBody UpdateProductRequest updateProductRequest){
-        log.info("updateProductPartiallyByCode  : {} with new data : {}",code,updateProductRequest);
-
+    public ProductResponse patchByCode(
+            @PathVariable String code,
+            @RequestBody
+            ProductDto productDto
+    ) {
+        log.info("patchByCode: {}, newData: {}",
+                code,
+                productDto);
         return null;
     }
 
+    @PutMapping("/{code}")
+    public ProductResponse updateByCode(
+            @PathVariable String code,
+            @RequestBody
+            UpdateProductRequest updateProductRequest
+    ) {
+        log.info("updateByCode: {}, newData: {}",
+                code,
+                updateProductRequest);
+        return null;
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{code}")
-    public void deleteProductByCode(@PathVariable String code){
-        log.info("deleteProductByCode : {}",code);
+    public void deleteByCode(@PathVariable String code) {
+        log.info("deleteByCode: {}", code);
+        throw new RuntimeException("Something went wrong");
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public ProductResponse createNew(
+            @Valid @RequestBody
+            CreateProductRequest createProductRequest
+    ) {
+        log.info("createNew: {}", createProductRequest);
+        return productService.createNew(createProductRequest);
+    }
+
+    @GetMapping("/{code}")
+    public ProductResponse getByCode(@PathVariable String code) {
+        log.info("getByCode: {}", code);
+        return null;
+    }
+
+    @GetMapping
+    public Page<ProductResponse> getAll(
+            @RequestParam(required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(required = false, defaultValue = "20") int pageSize
+    ) {
+        log.info("getAll with pageNumber: {} and pageSize: {}", pageNumber, pageSize);
+        return productService.getAll(pageNumber, pageSize);
     }
 
 }

@@ -1,10 +1,28 @@
 package com.example.spwmvca01a1.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
 import java.math.BigDecimal;
 
 public record CreateProductRequest(
-        String code,
+        @NotBlank(message = "Name is required")
+        @Size(max = 150)
         String name,
-        BigDecimal price
+
+        String description,
+
+        @NotNull
+        @Positive
+        BigDecimal price,
+
+        @Size(max = 255)
+        String picture,
+
+        @NotBlank(message = "Category ID is required")
+        @Size(max = 255)
+        String categoryId
 ) {
 }
